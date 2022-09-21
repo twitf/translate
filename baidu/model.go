@@ -7,10 +7,9 @@ import (
 	"net/http"
 )
 
-type Csrf struct {
-	Token         string `json:"token"`
-	ParameterName string `json:"parameterName"`
-	HeaderName    string `json:"headerName"`
+type Config struct {
+	Token string
+	Gtk   string
 }
 
 type Result struct {
@@ -37,18 +36,4 @@ func FormatResult(response http.Response) Result {
 		fmt.Println(err)
 	}
 	return result
-}
-
-func FormatCsrf(response http.Response) Csrf {
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-	var csrf Csrf
-	// 反序列化
-	err = json.Unmarshal(body, &csrf)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return csrf
 }

@@ -2,8 +2,7 @@ package bing
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/corpix/uarand"
+	browser "github.com/EDDYCJY/fake-useragent"
 	"io"
 	"net/http"
 	"net/url"
@@ -15,7 +14,6 @@ import (
 var host = "https://cn.bing.com/ttranslatev3"
 
 func Handle(params map[string]string) Result {
-	//jsCompilerVM = goja.New()
 	config := getConfig()
 
 	client := &http.Client{}
@@ -33,7 +31,7 @@ func Handle(params map[string]string) Result {
 		panic(err)
 	}
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Add("user-agent", uarand.GetRandom())
+	request.Header.Add("user-agent", browser.Computer())
 
 	query := request.URL.Query()
 	query.Add("isVertical", "1")
@@ -76,7 +74,7 @@ func getConfig() *Config {
 	//断言，顾名思义就是果断的去猜测一个未知的事物。在 go 语言中，interface{} 就是这个神秘的未知类型，其断言操作就是用来判断 interface{} 的类型。
 	floatKey := strArr[0].(float64)
 	key := strconv.FormatFloat(floatKey, 'f', 0, 64)
-	token := fmt.Sprintf("%v", strArr[1])
+	token := strArr[1].(string)
 
 	var reg = regexp.MustCompile(`IG:"(.*?)"`)
 	match = reg.FindStringSubmatch(html)

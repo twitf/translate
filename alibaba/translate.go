@@ -2,7 +2,7 @@ package alibaba
 
 import (
 	"bytes"
-	"github.com/corpix/uarand"
+	browser "github.com/EDDYCJY/fake-useragent"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -45,7 +45,7 @@ func Handle(params map[string]string) Result {
 		panic(err)
 	}
 
-	request.Header.Add("user-agent", uarand.GetRandom())
+	request.Header.Add("user-agent", browser.Computer())
 	request.Header.Add(csrfToken.HeaderName, csrfToken.Token)
 	request.Header.Set("Content-Type", writer.FormDataContentType())
 
