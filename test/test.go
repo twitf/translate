@@ -30,8 +30,9 @@ func testBing() {
 }
 func testBaidu() {
 	params := make(map[string]string)
-	params["source"] = "auto"
+	//params["source"] = "auto"
 	params["target"] = "en"
-	params["query"] = "请注意审核目标那块的驳回继续沿用之前的API，那块和其他的处理逻辑不一样 请加上remark参数"
-	baidu.Handle(params)
+	params["query"] = "你ahao"
+	result := baidu.Handle(params)
+	fmt.Println(result)
 }
