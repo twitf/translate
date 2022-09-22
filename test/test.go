@@ -8,7 +8,9 @@ import (
 )
 
 func main() {
-	testBaidu()
+	//testAlibaba()
+	testBing()
+	//testBaidu()
 }
 
 func testAlibaba() {
@@ -32,7 +34,7 @@ func testBaidu() {
 	params := make(map[string]string)
 	//params["source"] = "auto"
 	params["target"] = "en"
-	params["query"] = "你ahao"
+	params["query"] = "请注意审核目标那块的驳回继续沿用之前的API，那块和其他的处理逻辑不一样 请加上remark参数"
 	result := baidu.Handle(params)
-	fmt.Println(result)
+	fmt.Println(result.TransResult.Data[0].Dst)
 }

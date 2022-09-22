@@ -12,6 +12,7 @@ import (
 )
 
 var host = "https://cn.bing.com/ttranslatev3"
+var userAgent = browser.Computer()
 
 func Handle(params map[string]string) Result {
 	config := getConfig()
@@ -31,7 +32,7 @@ func Handle(params map[string]string) Result {
 		panic(err)
 	}
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Add("user-agent", browser.Computer())
+	request.Header.Add("user-agent", userAgent)
 
 	query := request.URL.Query()
 	query.Add("isVertical", "1")
