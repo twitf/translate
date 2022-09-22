@@ -4,13 +4,15 @@ import (
 	"Translate/alibaba"
 	"Translate/baidu"
 	"Translate/bing"
+	"Translate/youdao"
 	"fmt"
 )
 
 func main() {
 	//testAlibaba()
-	testBing()
+	//testBing()
 	//testBaidu()
+	testYoudao()
 }
 
 func testAlibaba() {
@@ -37,4 +39,13 @@ func testBaidu() {
 	params["query"] = "请注意审核目标那块的驳回继续沿用之前的API，那块和其他的处理逻辑不一样 请加上remark参数"
 	result := baidu.Handle(params)
 	fmt.Println(result.TransResult.Data[0].Dst)
+}
+
+func testYoudao() {
+	params := make(map[string]string)
+	params["source"] = "AUTO"
+	params["target"] = "AUTO"
+	params["query"] = "请注意审核目标那块的驳回继续沿用之前的API，那块和其他的处理逻辑不一样 请加上remark参数"
+	result := youdao.Handle(params)
+	fmt.Println(result.TranslateResult)
 }
