@@ -1,23 +1,22 @@
 package youdao
 
 import (
+	"Translate/utils"
+	"bytes"
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
-	browser "github.com/EDDYCJY/fake-useragent"
 	"io"
 	"math/rand"
+	"mime/multipart"
 	"net/http"
 	"net/http/cookiejar"
-	"net/url"
 	"strconv"
-	"strings"
 	"time"
 )
 
-const host = "https://fanyi.youdao.com/translate"
+const host = "http://fanyi.youdao.com/translate_o"
 
-var userAgent = browser.Computer()
+var userAgent = utils.UserAgent()
 var client = initClient()
 
 func initClient() *http.Client {
@@ -30,8 +29,7 @@ func initClient() *http.Client {
 func initCookie() {
 	request, _ := http.NewRequest("GET", "https://fanyi.youdao.com", nil)
 	request.Header.Add("user-agent", userAgent)
-	response, _ := client.Do(request)
-	fmt.Println(response.Header)
+	_, _ = client.Do(request)
 }
 func Md5(str string) string {
 	h := md5.New()
@@ -42,7 +40,8 @@ func generateConfig(query string) Config {
 	bv := Md5(userAgent)
 	lts := strconv.FormatInt(time.Now().UnixNano()/1e6, 10)
 	salt := lts + strconv.Itoa(rand.Intn(10))
-	sign := Md5("fanyideskweb" + salt + query + "Ygy_4c=r#e#4EX^NUGUc5")
+	bv = "47edca4d7e6ec9bf4fca7156ea36b8ef"
+	sign := Md5("fanyideskweb" + query + salt + "Ygy_4c=r#e#4EX^NUGUc5")
 	return Config{Bv: bv, Lts: lts, Salt: salt, Sign: sign}
 
 }
@@ -50,33 +49,37 @@ func generateConfig(query string) Config {
 func Handle(params map[string]string) Result {
 	initCookie()
 	config := generateConfig(params["query"])
-	fmt.Println(config)
 	//post要提交的数据
-	DataUrlVal := url.Values{}
-	DataUrlVal.Add("i", params["query"])
-	DataUrlVal.Add("from", params["source"])
-	DataUrlVal.Add("to", params["target"])
-	DataUrlVal.Add("smartresult", "dict")
-	DataUrlVal.Add("client", "fanyideskweb")
-	DataUrlVal.Add("salt", config.Salt)
-	DataUrlVal.Add("sign", config.Sign)
-	DataUrlVal.Add("lts", config.Lts)
-	DataUrlVal.Add("bv", config.Bv)
-	DataUrlVal.Add("doctype", "json")
-	DataUrlVal.Add("version", "2.1")
-	DataUrlVal.Add("keyfrom", "fanyi.web")
-	DataUrlVal.Add("action", "FY_BY_REALTlME")
 
-	request, err := http.NewRequest("POST", host, strings.NewReader(DataUrlVal.Encode()))
+	payload := &bytes.Buffer{}
+	writer := multipart.NewWriter(payload)
+	_ = writer.WriteField("i", params["query"])
+	_ = writer.WriteField("from", params["source"])
+	_ = writer.WriteField("to", params["target"])
+	_ = writer.WriteField("smartresult", "dict")
+	_ = writer.WriteField("client", "fanyideskweb")
+	_ = writer.WriteField("salt", config.Salt)
+	_ = writer.WriteField("sign", config.Sign)
+	_ = writer.WriteField("lts", config.Lts)
+	_ = writer.WriteField("bv", config.Bv)
+	_ = writer.WriteField("doctype", "json")
+	_ = writer.WriteField("version", "2.1")
+	_ = writer.WriteField("keyfrom", "fanyi.web")
+	_ = writer.WriteField("action", "FY_BY_REALTlME")
+	err := writer.Close()
 	if err != nil {
 		panic(err)
 	}
 
-	request.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-	request.Header.Add("Host", "fanyi.youdao.com")
-	request.Header.Add("User-Agent", userAgent)
-	request.Header.Add("Referer", "https://fanyi.youdao.com/")
-	request.Header.Add("Cookie", "OUTFOX_SEARCH_USER_ID_NCOO=1519430159.539675; OUTFOX_SEARCH_USER_ID=\"1233087801@10.108.162.133\"; ___rl__test__cookies=1663837506878")
+	request, err := http.NewRequest("POST", host, payload)
+	if err != nil {
+		panic(err)
+	}
+
+	request.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.2; rv:51.0) Gecko/20100101 Firefox/51.0")
+	request.Header.Add("Referer", "http://fanyi.youdao.com/")
+	//request.Header.Add("Cookie", "OUTFOX_SEARCH_USER_ID=-2022895048@10.168.8.76;")
+	request.Header.Set("Content-Type", writer.FormDataContentType())
 
 	query := request.URL.Query()
 	query.Add("smartresult", "dict")

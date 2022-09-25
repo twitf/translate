@@ -9,9 +9,9 @@ import (
 )
 
 func main() {
-	//testAlibaba()
-	//testBing()
-	//testBaidu()
+	testAlibaba()
+	testBing()
+	testBaidu()
 	testYoudao()
 }
 
@@ -47,5 +47,5 @@ func testYoudao() {
 	params["target"] = "AUTO"
 	params["query"] = "请注意审核目标那块的驳回继续沿用之前的API，那块和其他的处理逻辑不一样 请加上remark参数"
 	result := youdao.Handle(params)
-	fmt.Println(result.TranslateResult)
+	fmt.Println(result.TranslateResult[0][0].Tgt)
 }

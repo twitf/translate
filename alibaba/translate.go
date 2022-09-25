@@ -1,8 +1,8 @@
 package alibaba
 
 import (
+	"Translate/utils"
 	"bytes"
-	browser "github.com/EDDYCJY/fake-useragent"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -10,6 +10,7 @@ import (
 
 var host = "https://translate.alibaba.com/api/translate/text"
 var csrfHost = "https://translate.alibaba.com/api/translate/csrftoken"
+var userAgent = utils.UserAgent()
 
 func getCsrfToken() Csrf {
 	response, err := http.Get(csrfHost)
@@ -45,7 +46,7 @@ func Handle(params map[string]string) Result {
 		panic(err)
 	}
 
-	request.Header.Add("user-agent", browser.Computer())
+	request.Header.Add("user-agent", userAgent)
 	request.Header.Add(csrfToken.HeaderName, csrfToken.Token)
 	request.Header.Set("Content-Type", writer.FormDataContentType())
 

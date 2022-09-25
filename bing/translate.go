@@ -1,8 +1,8 @@
 package bing
 
 import (
+	"Translate/utils"
 	"encoding/json"
-	browser "github.com/EDDYCJY/fake-useragent"
 	"io"
 	"net/http"
 	"net/url"
@@ -12,11 +12,10 @@ import (
 )
 
 var host = "https://cn.bing.com/ttranslatev3"
-var userAgent = browser.Computer()
+var userAgent = utils.UserAgent()
 
 func Handle(params map[string]string) Result {
 	config := getConfig()
-
 	client := &http.Client{}
 	//post要提交的数据
 	DataUrlVal := url.Values{}
@@ -83,7 +82,8 @@ func getConfig() *Config {
 
 	var reg2 = regexp.MustCompile(`<div id="rich_tta" data-iid="(.*?)"`)
 	match = reg2.FindStringSubmatch(html)
-	IID := match[1]
+	//IID 后面的数字是翻译次数 当前是单次翻译固定为1即可
+	IID := match[1] + "1"
 
 	var config = Config{key, token, IG, IID}
 	return &config

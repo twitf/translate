@@ -1,7 +1,7 @@
 package baidu
 
 import (
-	browser "github.com/EDDYCJY/fake-useragent"
+	"Translate/utils"
 	"github.com/dop251/goja"
 	"io"
 	"net/http"
@@ -15,7 +15,7 @@ import (
 const host = "https://fanyi.baidu.com/v2transapi"
 const hostDetect = "https://fanyi.baidu.com/langdetect"
 
-var userAgent = browser.Computer()
+var userAgent = utils.UserAgent()
 var client = initClient()
 var html = initHtml()
 var jsCompilerVM = goja.New()
