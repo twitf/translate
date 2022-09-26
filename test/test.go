@@ -4,17 +4,27 @@ import (
 	"Translate/alibaba"
 	"Translate/baidu"
 	"Translate/bing"
+	"Translate/tencent"
 	"Translate/youdao"
 	"fmt"
 )
 
 func main() {
 	testAlibaba()
-	testBing()
+	//国内访问略慢 不建议
+	//testBing()
 	testBaidu()
 	testYoudao()
+	testTencent()
 }
-
+func testTencent() {
+	params := make(map[string]string)
+	params["source"] = "auto"
+	params["target"] = "en"
+	params["query"] = "生活不止眼前的苟且，还有明天和后天的苟且"
+	result := tencent.Handle(params)
+	fmt.Println(result.Translate.Records[0].TargetText)
+}
 func testAlibaba() {
 	params := make(map[string]string)
 	params["source"] = "auto"

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var host = "https://cn.bing.com/ttranslatev3"
+var host = "https://www.bing.com/ttranslatev3"
 var userAgent = utils.UserAgent()
 
 func Handle(params map[string]string) Result {
@@ -32,6 +32,7 @@ func Handle(params map[string]string) Result {
 	}
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	request.Header.Add("user-agent", userAgent)
+	request.Header.Add("host", "www.bing.com")
 
 	query := request.URL.Query()
 	query.Add("isVertical", "1")
@@ -54,7 +55,7 @@ func Handle(params map[string]string) Result {
 
 func getConfig() *Config {
 
-	res, err := http.Get("https://cn.bing.com/translator")
+	res, err := http.Get("https://www.bing.com/translator")
 	if err != nil {
 		panic(err)
 	}
