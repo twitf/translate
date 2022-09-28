@@ -1,7 +1,7 @@
 package alibaba
 
 import (
-	"Translate/utils"
+	"Translate/httpclient"
 	"bytes"
 	"io"
 	"mime/multipart"
@@ -10,7 +10,7 @@ import (
 
 var host = "https://translate.alibaba.com/api/translate/text"
 var csrfHost = "https://translate.alibaba.com/api/translate/csrftoken"
-var userAgent = utils.UserAgent()
+var userAgent = httpclient.UserAgent()
 
 func getCsrfToken() Csrf {
 	response, err := http.Get(csrfHost)

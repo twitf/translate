@@ -1,7 +1,7 @@
 package bing
 
 import (
-	"Translate/utils"
+	"Translate/httpclient"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -12,7 +12,7 @@ import (
 )
 
 var host = "https://www.bing.com/ttranslatev3"
-var userAgent = utils.UserAgent()
+var userAgent = httpclient.UserAgent()
 
 func Handle(params map[string]string) Result {
 	config := getConfig()

@@ -1,7 +1,7 @@
 package youdao
 
 import (
-	"Translate/utils"
+	"Translate/httpclient"
 	"bytes"
 	"crypto/md5"
 	"encoding/hex"
@@ -9,23 +9,15 @@ import (
 	"math/rand"
 	"mime/multipart"
 	"net/http"
-	"net/http/cookiejar"
 	"strconv"
 	"time"
 )
 
 const host = "http://fanyi.youdao.com/translate_o"
 
-var userAgent = utils.UserAgent()
-var client = initClient()
+var userAgent = httpclient.UserAgent()
+var client = httpclient.Client()
 
-func initClient() *http.Client {
-	jar, _ := cookiejar.New(nil)
-	client := &http.Client{
-		Jar: jar,
-	}
-	return client
-}
 func initCookie() {
 	request, _ := http.NewRequest("GET", "https://fanyi.youdao.com", nil)
 	request.Header.Add("user-agent", userAgent)
@@ -36,6 +28,7 @@ func Md5(str string) string {
 	h.Write([]byte(str))
 	return hex.EncodeToString(h.Sum(nil))
 }
+
 func generateConfig(query string) Config {
 	bv := Md5(userAgent)
 	lts := strconv.FormatInt(time.Now().UnixNano()/1e6, 10)

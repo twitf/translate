@@ -1,11 +1,10 @@
 package baidu
 
 import (
-	"Translate/utils"
+	"Translate/httpclient"
 	"github.com/dop251/goja"
 	"io"
 	"net/http"
-	"net/http/cookiejar"
 	"net/url"
 	"os"
 	"regexp"
@@ -15,19 +14,12 @@ import (
 const host = "https://fanyi.baidu.com/v2transapi"
 const hostDetect = "https://fanyi.baidu.com/langdetect"
 
-var userAgent = utils.UserAgent()
-var client = initClient()
+var userAgent = httpclient.UserAgent()
+var client = httpclient.Client()
 var html = initHtml()
 var jsCompilerVM = goja.New()
 var config = initConfig()
 
-func initClient() *http.Client {
-	jar, _ := cookiejar.New(nil)
-	client := &http.Client{
-		Jar: jar,
-	}
-	return client
-}
 func initHtml() string {
 	request, _ := http.NewRequest("GET", "https://fanyi.baidu.com", nil)
 	request.Header.Add("user-agent", userAgent)

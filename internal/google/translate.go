@@ -1,11 +1,10 @@
 package google
 
 import (
-	"Translate/utils"
+	"Translate/httpclient"
 	"fmt"
 	"io"
 	"net/http"
-	"net/http/cookiejar"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -15,8 +14,8 @@ import (
 
 const host = "https://translate.google.cn/_/TranslateWebserverUi/data/batchexecute"
 
-var userAgent = utils.UserAgent()
-var client = initClient()
+var userAgent = httpclient.UserAgent()
+var client = httpclient.Client()
 
 func Handle(params map[string]string) string {
 	config := getConfig()
@@ -71,13 +70,6 @@ func getReqId() string {
 	date := time.Now()
 	et := 3600*date.Hour() + 60*date.Minute() + date.Second()
 	return strconv.Itoa(1 + et + 1e5*1)
-}
-func initClient() *http.Client {
-	jar, _ := cookiejar.New(nil)
-	client := &http.Client{
-		Jar: jar,
-	}
-	return client
 }
 
 func getConfig() *Config {

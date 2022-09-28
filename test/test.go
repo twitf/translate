@@ -1,12 +1,12 @@
 package main
 
 import (
-	"Translate/alibaba"
-	"Translate/baidu"
-	"Translate/bing"
-	"Translate/google"
-	"Translate/tencent"
-	"Translate/youdao"
+	"Translate/internal/alibaba"
+	"Translate/internal/baidu"
+	"Translate/internal/bing"
+	"Translate/internal/google"
+	"Translate/internal/tencent"
+	"Translate/internal/youdao"
 	"fmt"
 )
 

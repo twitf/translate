@@ -1,7 +1,7 @@
 package tencent
 
 import (
-	"Translate/utils"
+	"Translate/httpclient"
 	"io"
 	"net/http"
 	"net/url"
@@ -11,7 +11,7 @@ import (
 )
 
 var host = "https://fanyi.qq.com/api/translate"
-var userAgent = utils.UserAgent()
+var userAgent = httpclient.UserAgent()
 
 func Handle(params map[string]string) Result {
 	config := getConfig()
