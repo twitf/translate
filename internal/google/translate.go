@@ -89,7 +89,6 @@ func getConfig() *Config {
 
 	var reg2 = regexp.MustCompile(`cfb2h":"(.*?)"`)
 	match = reg2.FindStringSubmatch(html)
-	//IID 后面的数字是翻译次数 当前是单次翻译固定为1即可
 	bl := match[1]
 
 	var config = Config{fsid, bl}
