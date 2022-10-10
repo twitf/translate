@@ -1,12 +1,5 @@
 package tencent
 
-import (
-	"encoding/json"
-	"fmt"
-	"io"
-	"net/http"
-)
-
 type Result struct {
 	SessionUUID string `json:"sessionUuid"`
 	Translate   struct {
@@ -72,32 +65,4 @@ type Result struct {
 type Config struct {
 	Qtv string `json:"qtv"`
 	Qtk string `json:"qtk"`
-}
-
-func FormatConfig(response http.Response) Config {
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-	var config Config
-	// 反序列化
-	err = json.Unmarshal(body, &config)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return config
-}
-
-func FormatResult(response http.Response) Result {
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-	var result Result
-	// 反序列化
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return result
 }

@@ -1,7 +1,7 @@
 package google
 
 import (
-	"Translate/httpclient"
+	"Translate/tools"
 	"fmt"
 	"io"
 	"net/http"
@@ -12,10 +12,10 @@ import (
 	"time"
 )
 
-const host = "https://translate.google.cn/_/TranslateWebserverUi/data/batchexecute"
+const host = "https://translate.google.com/_/TranslateWebserverUi/data/batchexecute"
 
-var userAgent = httpclient.UserAgent()
-var client = httpclient.Client()
+var userAgent = tools.UserAgent()
+var client = tools.Client()
 
 func Handle(params map[string]string) string {
 	config := getConfig()
@@ -73,7 +73,7 @@ func getReqId() string {
 }
 
 func getConfig() *Config {
-	request, _ := http.NewRequest("GET", "https://translate.google.cn/", nil)
+	request, _ := http.NewRequest("GET", "https://translate.google.com/", nil)
 	request.Header.Add("user-agent", userAgent)
 	response, _ := client.Do(request)
 

@@ -1,4 +1,4 @@
-package httpclient
+package tools
 
 import (
 	"github.com/DataHenHQ/useragent"

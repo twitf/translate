@@ -1,7 +1,7 @@
 package alibaba
 
 import (
-	"Translate/httpclient"
+	"Translate/tools"
 	"bytes"
 	"io"
 	"mime/multipart"
@@ -10,7 +10,7 @@ import (
 
 var host = "https://translate.alibaba.com/api/translate/text"
 var csrfHost = "https://translate.alibaba.com/api/translate/csrftoken"
-var userAgent = httpclient.UserAgent()
+var userAgent = tools.UserAgent()
 
 func getCsrfToken() Csrf {
 	response, err := http.Get(csrfHost)
@@ -23,7 +23,9 @@ func getCsrfToken() Csrf {
 			panic(err)
 		}
 	}(response.Body)
-	return FormatCsrf(*response)
+	var csrf Csrf
+	tools.FormatResponse(*response, &csrf)
+	return csrf
 }
 
 func Handle(params map[string]string) Result {
@@ -50,16 +52,8 @@ func Handle(params map[string]string) Result {
 	request.Header.Add(csrfToken.HeaderName, csrfToken.Token)
 	request.Header.Set("Content-Type", writer.FormDataContentType())
 
-	client := &http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		panic(err)
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(response.Body)
-	return FormatResult(*response)
+	response := tools.Request(http.Client{}, *request)
+	var result Result
+	tools.FormatResponse(response, &result)
+	return result
 }

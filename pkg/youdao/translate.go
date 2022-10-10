@@ -1,11 +1,8 @@
 package youdao
 
 import (
-	"Translate/httpclient"
+	"Translate/tools"
 	"bytes"
-	"crypto/md5"
-	"encoding/hex"
-	"io"
 	"math/rand"
 	"mime/multipart"
 	"net/http"
@@ -15,26 +12,20 @@ import (
 
 const host = "http://fanyi.youdao.com/translate_o"
 
-var userAgent = httpclient.UserAgent()
-var client = httpclient.Client()
+var userAgent = tools.UserAgent()
+var client = tools.Client()
 
 func initCookie() {
 	request, _ := http.NewRequest("GET", "https://fanyi.youdao.com", nil)
 	request.Header.Add("user-agent", userAgent)
 	_, _ = client.Do(request)
 }
-func Md5(str string) string {
-	h := md5.New()
-	h.Write([]byte(str))
-	return hex.EncodeToString(h.Sum(nil))
-}
 
 func generateConfig(query string) Config {
-	bv := Md5(userAgent)
+	bv := tools.Md5(userAgent)
 	lts := strconv.FormatInt(time.Now().UnixNano()/1e6, 10)
 	salt := lts + strconv.Itoa(rand.Intn(10))
-	bv = "47edca4d7e6ec9bf4fca7156ea36b8ef"
-	sign := Md5("fanyideskweb" + query + salt + "Ygy_4c=r#e#4EX^NUGUc5")
+	sign := tools.Md5("fanyideskweb" + query + salt + "Ygy_4c=r#e#4EX^NUGUc5")
 	return Config{Bv: bv, Lts: lts, Salt: salt, Sign: sign}
 
 }
@@ -79,16 +70,8 @@ func Handle(params map[string]string) Result {
 	query.Add("smartresult", "rule")
 	request.URL.RawQuery = query.Encode()
 
-	response, err := client.Do(request)
-	if err != nil {
-		panic(err)
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(response.Body)
-
-	return FormatResult(*response)
+	response := tools.Request(*client, *request)
+	var result Result
+	tools.FormatResponse(response, &result)
+	return result
 }

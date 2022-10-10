@@ -1,18 +1,20 @@
 package main
 
 import (
-	"Translate/internal/alibaba"
-	"Translate/internal/baidu"
-	"Translate/internal/bing"
-	"Translate/internal/google"
-	"Translate/internal/tencent"
-	"Translate/internal/youdao"
+	"Translate/pkg/alibaba"
+	"Translate/pkg/baidu"
+	"Translate/pkg/bing"
+	"Translate/pkg/google"
+	"Translate/pkg/tencent"
+	"Translate/pkg/youdao"
+
 	"fmt"
 )
 
 func main() {
+
 	//testAlibaba()
-	//国内访问略慢 不建议
+	////国内访问略慢 不建议
 	//testBing()
 	//testBaidu()
 	//testYoudao()
