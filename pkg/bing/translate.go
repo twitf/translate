@@ -1,7 +1,7 @@
 package bing
 
 import (
-	"Translate/httpclient"
+	"Translate/tools"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -12,7 +12,7 @@ import (
 )
 
 var host = "https://www.bing.com/ttranslatev3"
-var userAgent = httpclient.UserAgent()
+var userAgent = tools.UserAgent()
 
 func Handle(params map[string]string) Result {
 	config := getConfig()
@@ -40,17 +40,10 @@ func Handle(params map[string]string) Result {
 	query.Add("IID", config.IID)
 	request.URL.RawQuery = query.Encode()
 
-	response, err := client.Do(request)
-	if err != nil {
-		panic(err)
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(response.Body)
-	return FormatResult(*response)
+	response := tools.Request(*client, *request)
+	var result Result
+	tools.FormatResponse(response, &result)
+	return result
 }
 
 func getConfig() *Config {

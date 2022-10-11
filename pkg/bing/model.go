@@ -1,12 +1,5 @@
 package bing
 
-import (
-	"encoding/json"
-	"fmt"
-	"io"
-	"net/http"
-)
-
 type Result []struct {
 	DetectedLanguage struct {
 		Language string  `json:"language"`
@@ -31,18 +24,4 @@ type Config struct {
 	Token string
 	IG    string
 	IID   string
-}
-
-func FormatResult(response http.Response) Result {
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-	var result Result
-	// 反序列化
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return result
 }

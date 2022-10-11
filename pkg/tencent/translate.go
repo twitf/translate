@@ -1,8 +1,7 @@
 package tencent
 
 import (
-	"Translate/httpclient"
-	"io"
+	"Translate/tools"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -11,7 +10,7 @@ import (
 )
 
 var host = "https://fanyi.qq.com/api/translate"
-var userAgent = httpclient.UserAgent()
+var userAgent = tools.UserAgent()
 
 func Handle(params map[string]string) Result {
 	config := getConfig()
@@ -40,17 +39,10 @@ func Handle(params map[string]string) Result {
 	request.Header.Add("Referer", "https://fanyi.qq.com/")
 	request.Header.Add("Cookie", "qtv="+config.Qtv+"; qtk="+config.Qtk)
 
-	response, err := client.Do(request)
-	if err != nil {
-		panic(err)
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(response.Body)
-	return FormatResult(*response)
+	response := tools.Request(*client, *request)
+	var result Result
+	tools.FormatResponse(response, &result)
+	return result
 }
 
 func getConfig() *Config {
@@ -58,6 +50,7 @@ func getConfig() *Config {
 	if err != nil {
 		panic(err)
 	}
-	config := FormatConfig(*response)
+	var config Config
+	tools.FormatResponse(*response, config)
 	return &config
 }

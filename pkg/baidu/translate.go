@@ -1,7 +1,7 @@
 package baidu
 
 import (
-	"Translate/httpclient"
+	"Translate/tools"
 	"github.com/dop251/goja"
 	"io"
 	"net/http"
@@ -14,8 +14,8 @@ import (
 const host = "https://fanyi.baidu.com/v2transapi"
 const hostDetect = "https://fanyi.baidu.com/langdetect"
 
-var userAgent = httpclient.UserAgent()
-var client = httpclient.Client()
+var userAgent = tools.UserAgent()
+var client = tools.Client()
 var html = initHtml()
 var jsCompilerVM = goja.New()
 var config = initConfig()
@@ -53,7 +53,7 @@ func generateSign(query string, config Config) string {
 	err := jsCompilerVM.Set("window", jsWindow)
 
 	path, _ := os.Getwd()
-	jsFile := path + "/baidu/lib/sign.js"
+	jsFile := path + "/pkg/baidu/lib/sign.js"
 	bytes, err := os.ReadFile(jsFile)
 	if err != nil {
 		panic(err)
@@ -78,7 +78,8 @@ func getDetect(params map[string]string) Detect {
 	request.URL.RawQuery = query.Encode()
 	response, _ := client.Do(request)
 
-	detect := FormatDetect(*response)
+	var detect Detect
+	tools.FormatResponse(*response, &detect)
 	return detect
 }
 func Handle(params map[string]string) Result {
@@ -115,16 +116,8 @@ func Handle(params map[string]string) Result {
 	query.Add("to", params["target"])
 	request.URL.RawQuery = query.Encode()
 
-	response, err := client.Do(request)
-	if err != nil {
-		panic(err)
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(response.Body)
-
-	return FormatResult(*response)
+	response := tools.Request(*client, *request)
+	var result Result
+	tools.FormatResponse(response, &result)
+	return result
 }

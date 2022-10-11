@@ -37,19 +37,6 @@ type Result struct {
 	Logid int `json:"logid"`
 }
 
-func FormatResult(response http.Response) Result {
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-	var result Result
-	// 反序列化
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return result
-}
 func FormatDetect(response http.Response) Detect {
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
