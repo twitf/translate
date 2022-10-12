@@ -3,6 +3,7 @@ package google
 import (
 	"Translate/tools"
 	"fmt"
+	"github.com/tidwall/gjson"
 	"io"
 	"net/http"
 	"net/url"
@@ -63,7 +64,7 @@ func Handle(params map[string]string) string {
 	if err != nil {
 		fmt.Println(err)
 	}
-	return string(body)
+	return getTranslation(string(body))
 }
 
 func getReqId() string {
@@ -93,4 +94,14 @@ func getConfig() *Config {
 
 	var config = Config{fsid, bl}
 	return &config
+}
+
+func getTranslation(body string) string {
+	data := strings.Split(body, "\n")
+	str := strings.ReplaceAll(data[3], "\\", "")
+	str = strings.ReplaceAll(str, "\"[", "[")
+	str = strings.ReplaceAll(str, "]\"", "]")
+
+	value := gjson.Get(str, "0.2.1.0.0.5.0.0")
+	return value.String()
 }

@@ -14,7 +14,6 @@ var userAgent = tools.UserAgent()
 
 func Handle(params map[string]string) Result {
 	config := getConfig()
-
 	client := &http.Client{}
 	//post要提交的数据
 	DataUrlVal := url.Values{}
@@ -51,6 +50,6 @@ func getConfig() *Config {
 		panic(err)
 	}
 	var config Config
-	tools.FormatResponse(*response, config)
+	tools.FormatResponse(*response, &config)
 	return &config
 }

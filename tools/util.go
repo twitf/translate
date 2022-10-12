@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 )
 
 func FormatResponse(response http.Response, val interface{}) {
@@ -25,7 +24,7 @@ func FormatResponse(response http.Response, val interface{}) {
 }
 
 func JsonDecode(data []byte, val interface{}) {
-	err := json.Unmarshal(data, val)
+	err := json.Unmarshal(data, &val)
 	if err != nil {
 		panic("Json Decode Error:" + err.Error())
 	}
@@ -35,12 +34,4 @@ func Md5(str string) string {
 	h := md5.New()
 	h.Write([]byte(str))
 	return hex.EncodeToString(h.Sum(nil))
-}
-
-func Explode(delimiter, text string) []string {
-	if len(delimiter) > len(text) {
-		return strings.Split(delimiter, text)
-	} else {
-		return strings.Split(text, delimiter)
-	}
 }
