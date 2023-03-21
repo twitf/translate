@@ -1,5 +1,7 @@
 #### 目前支持的服务 `阿里翻译` `百度翻译` `必应翻译` `有道翻译` `腾讯翻译` `谷歌翻译`
 
+> Google 翻译 `X-Goog-BatchExecute-Bgr`这个Header影响翻译准确性，尚未完成解析
+
 ```go
 package main
 
