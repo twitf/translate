@@ -6,6 +6,7 @@ import (
 	"Translate/pkg/bing"
 	"Translate/pkg/google"
 	"Translate/pkg/tencent"
+	"Translate/pkg/volcengine"
 	"Translate/pkg/youdao"
 	"fmt"
 )
@@ -17,6 +18,7 @@ func main() {
 	testYoudao()
 	testTencent()
 	testGoogle()
+	testVolcengine()
 }
 func testTencent() {
 	params := make(map[string]string)
@@ -68,4 +70,13 @@ func testGoogle() {
 	params["query"] = "生活不止眼前的苟且，还有明天和后天的苟且"
 	result := google.Handle(params)
 	fmt.Println(result)
+}
+
+func testVolcengine() {
+	params := make(map[string]string)
+	params["source"] = "zh"
+	params["target"] = "en"
+	params["query"] = "生活不止眼前的苟且，还有明天和后天的苟且"
+	result := volcengine.Handle(params)
+	fmt.Println(result.Translation)
 }

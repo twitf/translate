@@ -2,13 +2,16 @@ package baidu
 
 import (
 	"Translate/tools"
+	"fmt"
 	"github.com/dop251/goja"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 )
 
 const host = "https://fanyi.baidu.com/v2transapi"
@@ -82,6 +85,11 @@ func getDetect(params map[string]string) Detect {
 	tools.FormatResponse(*response, &detect)
 	return detect
 }
+
+func getTimestamp() string {
+	return strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
+}
+
 func Handle(params map[string]string) Result {
 	var source string
 	source, ok := params["source"]
@@ -102,6 +110,7 @@ func Handle(params map[string]string) Result {
 	DataUrlVal.Add("sign", sign)
 	DataUrlVal.Add("token", config.Token)
 	DataUrlVal.Add("domain", "common")
+	DataUrlVal.Add("ts", getTimestamp())
 
 	request, err := http.NewRequest("POST", host, strings.NewReader(DataUrlVal.Encode()))
 	if err != nil {
@@ -117,6 +126,7 @@ func Handle(params map[string]string) Result {
 	request.URL.RawQuery = query.Encode()
 
 	response := tools.Request(*client, *request)
+	fmt.Println(response)
 	var result Result
 	tools.FormatResponse(response, &result)
 	return result

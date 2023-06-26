@@ -2,37 +2,37 @@ package volcengine
 
 import (
 	"Translate/tools"
+	"bytes"
+	"encoding/json"
 	"net/http"
-	"net/url"
-	"strings"
 )
 
-var host = "https://translate.volcengine.com"
+var host = "https://translate.volcengine.com/crx/translate/v1"
 var userAgent = tools.UserAgent()
 
-func Handle(params map[string]string) {
+func Handle(params map[string]string) Result {
 	client := &http.Client{}
 	//post要提交的数据
-	DataUrlVal := url.Values{}
-	DataUrlVal.Add("msToken", "")
-	DataUrlVal.Add("X-Bogus", "DFSzswVLQDaokqMPtcHlYuKVuMVl")
-	DataUrlVal.Add("_signature", "")
+	var requestParam RequestParam
+	requestParam.SourceLanguage = params["source"]
+	requestParam.TargetLanguage = params["target"]
+	requestParam.Text = params["query"]
 
-	DataUrlVal.Add("fromLang", params["source"])
-	DataUrlVal.Add("sourceText", params["query"])
-	DataUrlVal.Add("target", params["target"])
-	DataUrlVal.Add("ticket", "")
-	request, err := http.NewRequest("POST", host, strings.NewReader(DataUrlVal.Encode()))
-
+	jsonBody, err := json.Marshal(requestParam)
 	if err != nil {
 		panic(err)
 	}
-	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Add("user-agent", userAgent)
-	request.Header.Add("host", "fanyi.qq.com")
-	request.Header.Add("Origin", "https://translate.volcengine.com")
-	request.Header.Add("Referer", "https://translate.volcengine.com")
 
+	request, err := http.NewRequest("POST", host, bytes.NewBuffer(jsonBody))
+	if err != nil {
+		panic(err)
+	}
+
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("user-agent", userAgent)
 	response := tools.Request(*client, *request)
-	return response.Body
+
+	var result Result
+	tools.FormatResponse(response, &result)
+	return result
 }
